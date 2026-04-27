@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Tracking</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body { font-family: Arial; background: #f3f4f6; }
+
+        .container {
+            width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        h2 { color: #1e3a8a; }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #d1d5db;
+            margin: auto;
+            line-height: 40px;
+            color: white;
+        }
+
+        .active { background: #2563eb; }
+        .done { background: green; }
+
+        #map { height: 350px; margin-top: 20px; border-radius: 10px; }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🚚 Live Order Tracking</h2>
+
+    {% if not order_id %}
+        <input type="text" id="orderInput" placeholder="Enter Order ID">
+        <button onclick="loadTracking()">Track</button>
+    {% endif %}
+
+    <div class="steps">
+        <div><div id="placed" class="circle">1</div>Placed</div>
+        <div><div id="processing" class="circle">2</div>Processing</div>
+        <div><div id="ready" class="circle">3</div>Ready</div>
+        <div><div id="dispatch" class="circle">4</div>Dispatched</div>
+    </div>
+
+    <div id="map"></div>
+
+</div>
+
+<script>
+
+let orderId = "{{ order_id }}";
+let map, marker;
+let source, destination;
+let moving = false;
+
+// INIT MAP
+function initMap(){
+    map = L.map('map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+}
+
+// LOAD COORDINATES
+function loadCoordinates(){
+
+    return fetch(`/get_coordinates/${orderId}`)
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("COORD:", data);
+
+        if(data.error){
+            alert(data.error);
+            return;
+        }
+
+        source = data.source;
+        destination = data.destination;
+
+        // Marker
+        marker = L.marker(source).addTo(map)
+            .bindPopup("📦 At Hub").openPopup();
+
+        // Route
+        L.polyline([source, destination], {color:'blue'}).addTo(map);
+    });
+}
+
+// MOVEMENT
+function simulateMovement(){
+
+    if(moving) return;
+    moving = true;
+
+    let lat = source[0];
+    let lng = source[1];
+    let step = 0;
+
+    let interval = setInterval(() => {
+
+        if(step >= 20){
+            clearInterval(interval);
+
+            marker.setLatLng(destination)
+                  .setPopupContent("📦 Delivered");
+
+            fetch(`/mark_delivered/${orderId}`);
+            return;
+        }
+
+        lat += (destination[0] - source[0]) / 20;
+        lng += (destination[1] - source[1]) / 20;
+
+        marker.setLatLng([lat, lng])
+              .setPopupContent("🚚 In Transit");
+
+        step++;
+
+    }, 1500);
+}
+
+// UPDATE MAP BASED ON STATUS
+function updateMap(status){
+
+    if(status === "READY_FOR_DISPATCH"){
+        marker.setLatLng(source)
+              .setPopupContent("📦 At Hub");
+    }
+
+    if(status === "IN_TRANSIT"){
+        simulateMovement();
+    }
+
+    if(status === "DELIVERED"){
+        marker.setLatLng(destination)
+              .setPopupContent("📦 Delivered");
+    }
+}
+
+// LOAD TRACKING
+function loadTracking(id=null){
+
+    if(!id){
+        id = document.getElementById("orderInput").value;
+        orderId = id;
+    }
+
+    loadCoordinates().then(() => {
+
+        fetch(`/track/${orderId}`)
+        .then(res => res.json())
+        .then(data => {
+
+            if(data.error){
+                alert("Order not found");
+                return;
+            }
+
+            updateSteps(data.status);
+            updateMap(data.status);
+        });
+
+    });
+}
+
+// STATUS UI
+function updateSteps(status){
+
+    document.getElementById("placed").className = "circle done";
+
+    if(status === "PROCESSING"){
+        document.getElementById("processing").className = "circle active";
+    }
+
+    if(status === "READY_FOR_DISPATCH"){
+        document.getElementById("processing").className = "circle done";
+        document.getElementById("ready").className = "circle active";
+    }
+
+    if(status === "IN_TRANSIT"){
+        document.getElementById("processing").className = "circle done";
+        document.getElementById("ready").className = "circle done";
+        document.getElementById("dispatch").className = "circle active";
+    }
+
+    if(status === "DELIVERED"){
+        document.getElementById("dispatch").className = "circle done";
+    }
+}
+
+// INIT
+window.onload = function(){
+    initMap();
+
+    if(orderId && orderId !== "None"){
+        loadTracking(orderId);
+    }
+};
+
+</script>
+
+</body>
+</html>

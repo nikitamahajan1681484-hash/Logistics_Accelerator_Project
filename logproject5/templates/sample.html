@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Route Analyzer</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+
+        select, button {
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>🚚 Route Analyzer</h2>
+
+<select id="source">
+    <option>Mumbai</option>
+    <option>Delhi</option>
+    <option>Pune</option>
+    <option>Bangalore</option>
+</select>
+
+<select id="destination">
+    <option>Delhi</option>
+    <option>Mumbai</option>
+    <option>Pune</option>
+    <option>Bangalore</option>
+</select>
+
+<button onclick="analyze()">Analyze</button>
+
+<h3>📍 Routes</h3>
+<div id="routes" class="grid"></div>
+
+<h3>🏭 Hubs</h3>
+<div id="hubs" class="grid"></div>
+
+<script>
+function analyze() {
+    let source = document.getElementById("source").value;
+    let destination = document.getElementById("destination").value;
+
+    fetch(`/analyze_route?source=${source}&destination=${destination}`)
+    .then(res => res.json())
+    .then(data => {
+
+        // ROUTES
+        let routeHTML = "";
+        data.routes.forEach(r => {
+            routeHTML += `
+                <div class="card">
+                    <b>Type:</b> ${r.type} <br>
+                    <b>Path:</b> ${r.path.join(" → ")} <br>
+                    <b>Distance:</b> ${r.distance} km <br>
+                    <b>Time:</b> ${r.time} hrs
+                </div>
+            `;
+        });
+
+        document.getElementById("routes").innerHTML = routeHTML;
+
+        // HUBS
+        let hubHTML = "";
+        data.hubs.forEach(h => {
+            hubHTML += `
+                <div class="card">
+                    <b>${h.name}</b><br>
+                    City: ${h.city}<br>
+                    Inventory: ${h.inventory}<br>
+                    Vehicles: ${h.available_vehicles}
+                </div>
+            `;
+        });
+
+        document.getElementById("hubs").innerHTML = hubHTML;
+    });
+}
+</script>
+
+</body>
+</html>

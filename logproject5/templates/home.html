@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Logistics Accelerator</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f7fb;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: #0f172a;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #cbd5e1;
+    font-size: 15px;
+}
+
+.nav-links a:hover {
+    color: #38bdf8;
+}
+/* HERO */
+.hero {
+    height: 55vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at 30% 30%, #1e3a8a, #0f172a);
+    color: white;
+    text-align: center;
+}
+
+/* HERO TEXT */
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 16px;
+    color: #cbd5e1;
+}
+
+/* CAROUSEL SECTION */
+.carousel-container {
+    margin-top: -70px;
+    padding-bottom: 50px;
+}
+
+/* CARD */
+.info-card {
+    width: 300px;
+    height: 180px;
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-10px) scale(1.03);
+}
+
+/* CARD TEXT */
+.info-card h4 {
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.info-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* ALIGN CARDS */
+.carousel-item .d-flex {
+    justify-content: center;
+    gap: 30px;
+}
+
+/* FIX ARROW VISIBILITY */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #0f172a;
+    border-radius: 50%;
+    padding: 18px;
+}
+
+/* FLOW SECTION */
+.flow-section {
+    padding: 60px 20px;
+    text-align: center;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* TITLE */
+.flow-section h2 {
+    margin-bottom: 30px;
+    color: #1e293b;
+}
+
+/* FLOW CONTAINER */
+.flow-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.flow-box {
+    background: #0f172a;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+    box-shadow: 0 0 0 rgba(56,189,248,0.7);
+}
+
+.flow-box:hover {
+    background: #1e3a8a;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(56,189,248,0.7);
+}
+
+/* ARROW */
+.arrow {
+    font-size: 22px;
+    color: #1e293b;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+    <div class="logo">🚚 Logistics Accelerator</div>
+
+
+<div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/create">Create</a>
+    <a href="/orders">Orders</a>
+    <a href="/tracking">Tracking</a>
+    <a href="/dashboard">Dashboard</a>
+
+</div>
+
+
+</div>
+
+<!-- HERO -->
+
+<div class="hero">
+    <h1>AI-Powered Logistics Automation</h1>
+    <p>Smart routing, real-time tracking, and automated fulfillment</p>
+</div>
+
+<!-- CAROUSEL -->
+
+<div class="carousel-container">
+
+<div id="cardCarousel" class="carousel slide" data-bs-ride="carousel">
+
+
+<div class="carousel-inner">
+
+    <!-- SLIDE 1 -->
+    <div class="carousel-item active">
+        <div class="d-flex">
+
+            <div class="info-card">
+                <h4>🚀 Smart Routing</h4>
+                <p>Finds optimal routes instantly</p>
+            </div>
+
+            <div class="info-card">
+                <h4>📦 Inventory</h4>
+                <p>Manages stock efficiently</p>
+            </div>
+
+            <div class="info-card">
+                <h4>🚚 Dispatch</h4>
+                <p>Automates shipment planning</p>
+            </div>
+            
+             <div class="info-card">
+                <h4>📍 Tracking</h4>
+                <p>Real-time shipment tracking</p>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+</div>
+
+</div>
+<!-- FLOW SECTION -->
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

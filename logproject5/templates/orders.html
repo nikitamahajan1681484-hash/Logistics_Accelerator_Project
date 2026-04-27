@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .container {
+            width: 85%;
+            margin: 40px auto;
+        }
+
+        h2 {
+            color: #1e3a8a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+        .back-btn {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #1e40af;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Orders</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Load</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="table">
+            <tr>
+                <td colspan="5" class="empty">Loading orders...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div style="margin-bottom: 20px;">
+    <button onclick="goHome()" class="back-btn">⬅ Back to Home</button>
+</div>
+<script>
+async function loadOrders() {
+    try {
+        const res = await fetch("/get_orders");
+
+        if (!res.ok) {
+            throw new Error("API not found");
+        }
+
+        const data = await res.json();
+
+        let rows = "";
+
+        if (data.length === 0) {
+            rows = `<tr><td colspan="5">No Orders Found</td></tr>`;
+        } else {
+            data.forEach(o => {
+                rows += `
+                <tr>
+                    <td>${o.ORDER_ID}</td>
+                    <td>${o.SOURCE}</td>
+                    <td>${o.DESTINATION}</td>
+                    <td>${o.LOAD}</td>
+                    <td>${o.STATUS}</td>
+                </tr>`;
+            });
+        }
+
+        document.getElementById("table").innerHTML = rows;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("table").innerHTML =
+            `<tr><td colspan="5">Error loading data</td></tr>`;
+    }
+}
+
+window.onload = loadOrders;
+function goHome() {
+    window.location.href = "/";
+}
+</script>
+
+
+</body>
+</html>
